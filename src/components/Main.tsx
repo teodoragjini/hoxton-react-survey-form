@@ -1,67 +1,80 @@
-import { useState, useSyncExternalStore } from "react";
+import { useState } from "react";
 import AnswersList from "./AnswersList";
+
+type AnswearType = {
+  review: string;
+  email: string;
+  username: string;
+  consistency: number;
+  colour: number;
+  logo: number;
+  bestFeatures: string[];
+  worstFeatures: string[];
+  timeSpent: string[];
+};
 
 function Main() {
   // State for the challenge #3
   const [users, setUsers] = useState();
 
+  const [answers, setAnswers] = useState<AnswearType[]>([]);
 
-  type initialForm = {
-    review: string;
-    email: string;
-    username: string;
-    consistency: number;
-    colour: number;
-    logo: number;
-    bestFeatures: never[];
-    worstFeatures: never[];
-    timeSpent: never[];
-
-  }
-
-  const initialForm = {
+  
+  const exampleAnswer: AnswearType = {
     review: "",
     email: "",
     username: "",
     consistency: 0,
     colour: 0,
     logo: 0,
-    bestFeatures: [],
-    worstFeatures: [],
-    timeSpent: [],
+    bestFeatures: ["colour"],
+    worstFeatures: ["logo"],
+    timeSpent: ["swiming"],
   };
 
   return (
     <main className="main">
       <section className={`main__list ${open ? "open" : ""}`}>
         <h2>Answers list</h2>
-        {/* answers should go here */}
+        <AnswersList answersList={answers} />
       </section>
       <section className="main__form">
         <form
           className="form"
-          onSubmit={(event) => {
+          onSubmit={event => {
             event.preventDefault();
 
-            let initialForm = {
-              bestFeatures: event.target.features.checked,
-              worstFeatures: event.target.worstFeatures.checked,
-              consistency: Number(event.target.consistency.value),
-              colour: Number(event.target.colour.value),
-              logo : Number(event.target.logo.value),
-              timeSpent: event.target.timeSpent.checked,
-              review: event.target.review.value,
-              username: event.target.username.value,
-              email: event.target.email.value
-            }
-
-         setUsers([...users,user])
-
             const bestFeatures = [
-              ...document.querySelectorAll('input[name = "features"]:checked'),
+              ...document.querySelectorAll(
+                'input[name = "bestFeatures"]:checked'
+              ),
             ].map((input) => input.value);
 
-            console.log(Number(event.target.consistency.value));
+            const worstFeatures = [
+              ...document.querySelectorAll(
+                'input[name = "worstFeatures"]:checked'
+              ),
+            ].map((input) => input.value);
+
+            const timeSpent = [
+              ...document.querySelectorAll('input[name = "timeSpent"]:checked'),
+            ].map((input) => input.value);
+
+
+              let answer: AnswearType = {
+              bestFeatures: bestFeatures,
+              worstFeatures: worstFeatures,
+              consistency: Number(event.target.consistency.value),
+              colour: Number(event.target.colour.value),
+              logo: Number(event.target.logo.value),
+              timeSpent:timeSpent,
+              review: event.target.review.value,
+              username: event.target.username.value,
+              email: event.target.email.value,
+            };
+
+            setAnswers([...answers, answer]);
+
           }}
         >
           <h2>Tell us what you think about your rubber duck!</h2>
@@ -71,28 +84,28 @@ function Main() {
           <ul className="checkbox-list">
             <li>
               <label>
-                <input type="checkbox" name="features" value="color" />
+                <input type="checkbox" name="bestFeatures" value="color" />
                 <span>It's yellow!</span>
               </label>
             </li>
 
             <li>
               <label>
-                <input type="checkbox" name="features" value="sound" />
+                <input type="checkbox" name="bestFeatures" value="sound" />
                 <span>It squeaks!</span>
               </label>
             </li>
 
             <li>
               <label>
-                <input type="checkbox" name="features" value="logo" />
+                <input type="checkbox" name="bestFeatures" value="logo" />
                 <span>It has a logo!</span>
               </label>
             </li>
 
             <li>
               <label>
-                <input type="checkbox" name="features" value="size" />
+                <input type="checkbox" name="bestFeatures" value="size" />
                 <span>It's big!</span>
               </label>
             </li>
@@ -105,28 +118,28 @@ function Main() {
           <ul className="checkbox-list">
             <li>
               <label>
-                <input type="checkbox" name="features" value="color" />
+                <input type="checkbox" name="worstFeatures" value="color" />
                 <span>It's yellow!</span>
               </label>
             </li>
 
             <li>
               <label>
-                <input type="checkbox" name="features" value="sound" />
+                <input type="checkbox" name="worstFeatures" value="sound" />
                 <span>It squeaks!</span>
               </label>
             </li>
 
             <li>
               <label>
-                <input type="checkbox" name="features" value="logo" />
+                <input type="checkbox" name="worstFeatures" value="logo" />
                 <span>It has a logo!</span>
               </label>
             </li>
 
             <li>
               <label>
-                <input type="checkbox" name="features" value="size" />
+                <input type="checkbox" name="worstFeatures" value="size" />
                 <span>It's big!</span>
               </label>
             </li>
@@ -250,34 +263,22 @@ function Main() {
 
             <li>
               <label>
-                <input type="checkbox" name="timeSpent" value="notSpentTime" />
+                <input type="checkbox" name="timeSpent" value="noTime" />
                 <span>I dont like to spend time with it</span>
               </label>
             </li>
           </ul>
 
+            <h3>What else have you got to say about your rubber duck?</h3>
+            <textarea name="review"></textarea>
 
-          <label>
-            {" "}
-            What else have you got to say about your rubber duck?
-            <textarea></textarea>
-          </label>
+          <h3> Put your name here (if you feel like it):</h3>
+          <input type="text" name="username"></input>
 
-          <h3> Put your name here (if you feel like it):</h3>           
-            <input type="text" name="username" value=""></input>
+          <h3>Leave us your email pretty please??</h3>
+          <input type="email" name="email"></input>
 
-          <label>
-            Leave us your email pretty please??
-            <input type="email" name="email" value=""></input>
-          </label>
-
-          <input
-            className="form__submit"
-            type="submit"
-            value="Submit Survey!"
-          />
-
-
+          <button  className="form__submit"> Submit Survey!</button>        
         </form>
       </section>
     </main>
